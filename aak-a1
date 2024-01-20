@@ -10,3 +10,12 @@ one more line to be added in local repo
 
 added one line in remote repo
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+stash ku line added
+=======
+added 2nd stash
+>>>>>>> Stashed changes
+=======
+3rd line added for stash
+>>>>>>> Stashed changes
