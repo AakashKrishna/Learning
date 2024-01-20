@@ -1,10 +1,12 @@
 Hi this is a1 branch file
-<<<<<<< HEAD
-=======
+
 
 New line to be added
 
 2nd line added
 3rd line to be added
+
 one more line to be added in local repo
->>>>>>> 647cb4e (Files are modified)
+
+added one line in remote repo
+
