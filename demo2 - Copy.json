@@ -1,0 +1,154 @@
+{
+"AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "",
+    "Metadata": {
+
+    },
+    "Parameters": {
+        
+        "vpccidar": {
+            "Description": "This is for vpc-ip",
+            "Type": "String",
+            "Default": "10.10.0.0/20"
+        },
+        
+        "sub1cidr": {
+            "Description": "-",
+            "Type": "String",
+            "Default": "10.10.1.0/28"
+        },
+        
+        "azsub1": {
+            "Description": "Availability zone for subnet 1",
+            "Type": "List AWS::EC2::AvailabilityZone::Name"
+        },
+        "sub2cidr": {
+          "Description": "-",
+          "Type": "String",
+          "Default": "10.10.2.0/28"
+      },
+      
+      "azsub2": {
+          "Description": "Availability zone for subnet 2",
+          "Type": "List AWS::EC2::AvailabilityZone::Name"
+      }
+        
+        
+        
+    
+    },
+    "Mappings": {
+
+    },
+    "Conditions": {
+
+    },
+    "Resources": {
+        
+        "Aakvpc": {
+          "Type": "AWS::EC2::VPC",
+          "Properties": {
+            "CidrBlock":{ "Ref": "vpccidar" },
+            "Tags":[{ "Key": "Name", "Value":  "aakvpc1" }]
+          }
+        },
+        
+        "AakIGW": {
+          "Type": "AWS::EC2::InternetGateway",
+          "Properties": {
+            "Tags": [{ "Key": "Name", "Value":  "aakigw1" }]
+          }
+        },
+        "AttachGateway": {
+          "Type": "AWS::EC2::VPCGatewayAttachment",
+          "Properties": {
+            "VpcId": { "Ref": "Aakvpc" },
+            "InternetGatewayId": { "Ref": "AakIGW" }
+          }
+        },
+        
+        "sub1": {
+          "Type": "AWS::EC2::Subnet",
+          "Properties": {
+            "AvailabilityZone": { "Ref": "azsub1" },
+            "VpcId": { "Ref": "Aakvpc" },
+            "CidrBlock": { "Ref": "sub1cidr" },
+            "Tags": [{ "Key": "Name", "Value":  "subnet1" }]
+          }
+        },
+        
+        "sub2": {
+          "Type": "AWS::EC2::Subnet",
+          "Properties": {
+            "AvailabilityZone": { "Ref": "azsub2" },
+            "VpcId": { "Ref": "Aakvpc" },
+            "CidrBlock": { "Ref": "sub2cidr" },
+            "Tags": [{ "Key": "Name", "Value":  "subnet2" }]
+          }
+        },
+        
+        "PubRT": {
+          "Type": "AWS::EC2::RouteTable",
+          "Properties": {
+            "VpcId": { "Ref": "Aakvpc"},
+            "Tags": [{ "Key": "Name", "Value":  "publicRT" }]
+          }
+        },
+        
+        "pubroute": {
+          "Type": "AWS::EC2::Route",
+          "Properties": {
+            "RouteTableId": { "Ref": "PubRT" },
+            "DestinationCidrBlock": "0.0.0.0/0",
+            "GatewayId": { "Ref":"AakIGW"}
+          }
+        },
+        
+        "pubsnass": {
+          "Type": "AWS::EC2::SubnetRouteTableAssociation",
+          "Properties": {
+            "SubnetId": { "Ref": "sub1" },
+            "RouteTableId": { "Ref": "PubRT" }
+          }
+        },
+        
+        "priRT": {
+          "Type": "AWS::EC2::RouteTable",
+          "Properties": {
+            "VpcId": { "Ref": "Aakvpc"},
+            "Tags": [{ "Key": "Name", "Value":  "PrivateRT" }]
+          }
+        },
+        
+        "priroute": {
+          "Type": "AWS::EC2::Route",
+          "Properties": {
+            "RouteTableId": { "Ref": "priRT"},
+            "DestinationCidrBlock": "--",
+            "GatewayId": "--"
+          }
+        },
+        
+        "prisnass": {
+          "Type": "AWS::EC2::SubnetRouteTableAssociation",
+          "Properties": {
+            "SubnetId": { "Ref": "sub2"},
+            "RouteTableId": { "Ref": "priRT"}
+          }
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+    },
+    "Outputs": {
+
+    }
+}
